@@ -1,3 +1,15 @@
-node_modules
-dist
+node_modules/
+dist/
+
 .env
+*.env
+
+prisma/migrations/
+
+logs/
+*.log
+
+.docker-data/
+
+.DS_Store
+Thumbs.db
