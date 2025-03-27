@@ -97,3 +97,31 @@ export const authMiddleware = async(
     }
 
 }
+
+export const adminMiddleware = async(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.user?.id,
+                role: 'ADMIN'
+            }
+        })
+
+        if (!user) {
+            return res.status(403).json({ 
+                message: 'Acesso negado. Requer permissão de administrador.' 
+            })
+        }
+
+        next()
+    } catch (error) {
+        return res.status(500).json({ 
+            message: 'Erro na verificação de permissões',
+            error: error instanceof Error ? error.message : 'Erro desconhecido'
+        })
+    }
+}
