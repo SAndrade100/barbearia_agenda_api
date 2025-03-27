@@ -5,6 +5,16 @@ import jwt from 'jsonwebtoken'
 const prisma = new PrismaClient()
 
 export const userService = {
+
+    /**
+     * Cria um novo usuário no sistema.
+     * @param {Object} data - Dados do usuário.
+     * @param {string} data.name - Nome do usuário.
+     * @param {string} data.email - Email do usuário.
+     * @param {string} data.phone - Telefone do usuário.
+     * @param {string} data.password - Senha do usuário (será criptografada).
+     * @returns {Promise<Object>} O usuário criado (sem a senha).
+     */
     async createUser(data: {
         name: string, 
         email: string, 
@@ -28,6 +38,13 @@ export const userService = {
         return user
     },
 
+    /**
+     * Autentica um usuário e retorna um token JWT.
+     * @param {string} email - Email do usuário.
+     * @param {string} password - Senha do usuário.
+     * @returns {Promise<Object>} Objeto contendo o usuário autenticado e o token JWT.
+     * @throws {Error} Se o usuário não for encontrado ou a senha estiver incorreta.
+     */
     async authenticateUser(email: string, password: string) {
         const user = await prisma.user.findUnique({ where: { email } })
 
