@@ -1,39 +1,38 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id  String  @id @default(uuid())
-  name   String
-  email   String @unique
-  phone   String @unique
-  password  String
-
-  createdAT DateTime  @default(now())
-
-  appointments Appoitment[]
+generator client {
+  provider = "prisma-client-js"
 }
 
-model Appoitment {
-  id String @id @default(uuid())
-  userId String
-  user User @relation(fields: [userId], references: [id])
-  date DateTime
-  service String
-  barber String
-  status AppoitmentStatus @default(SCHEDULED)
-  
-  createdAT DateTime  @default(now())
-}
-
-enum AppoitmentStatus {
+enum AppointmentStatus {
   SCHEDULED
   CONFIRMED
   CANCELED
   COMPLETED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  
+  appointments Appointment[]
+}
+
+model Appointment {
+  id        String             @id @default(uuid())
+  userId    String
+  user      User               @relation(fields: [userId], references: [id])
+  
+  date      DateTime
+  service   String
+  barber    String
+  status    AppointmentStatus  @default(SCHEDULED)
+  createdAt DateTime           @default(now())
 }
