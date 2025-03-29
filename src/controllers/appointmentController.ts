@@ -3,7 +3,7 @@ import { appointmentService } from '../services/appointmentService'
 import { AppointmentStatus } from '@prisma/client'
 
 export const appointmentController = {
-    async createAppointment(req: Request, res: Response) {
+    async createAppointment(req: Request, res: Response): Promise<any> {
         try {
             const appointment = await appointmentService.createAppointment(req.body)
             return res.status(201).json(appointment);
@@ -12,7 +12,7 @@ export const appointmentController = {
         }
     },
 
-    async listAppointments(req: Request, res: Response) {
+    async listAppointments(req: Request, res: Response): Promise<any> {
         try {
             const { userId } = req.query;
             const appointments = await appointmentService.listAppointment(userId as string);
@@ -22,7 +22,7 @@ export const appointmentController = {
         }
     },
 
-    async updateAppointmentStatus(req: Request, res: Response) {
+    async updateAppointmentStatus(req: Request, res: Response): Promise<any> {
         try {
             const { appointmentId } = req.params
             const { status } = req.body

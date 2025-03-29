@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction} from 'express'
+import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { PrismaClient } from '@prisma/client'
 
@@ -22,11 +22,11 @@ declare global {
     }
 }
 
-export const authMiddleware = async(
+export const authMiddleware = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): Promise<any> => {
     const authHeader = req.headers.authorization
 
     if (!authHeader) {
@@ -44,14 +44,14 @@ export const authMiddleware = async(
 
     const [scheme, token] = parts
     if (!/^Bearer$/i.test(scheme)) {
-        return res.status(401).json({ 
-            message: 'Token mal formatado' 
+        return res.status(401).json({
+            message: 'Token mal formatado'
         })
     }
 
     try {
         const decoded = jwt.verify(
-            token, 
+            token,
             process.env.JWT_SECRET!
         ) as TokenPayload
 
@@ -65,8 +65,8 @@ export const authMiddleware = async(
         })
 
         if (!user) {
-            return res.status(401).json({ 
-                message: 'Usuário não encontrado' 
+            return res.status(401).json({
+                message: 'Usuário não encontrado'
             })
         }
 
@@ -76,33 +76,32 @@ export const authMiddleware = async(
             name: user.name
         }
 
-        next()
-    } catch(error) {
+        next() // Ensure next() is called here
+    } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
-            return res.status(401).json({ 
-                message: 'Token expirado. Faça login novamente.' 
+            return res.status(401).json({
+                message: 'Token expirado. Faça login novamente.'
             })
         }
 
         if (error instanceof jwt.JsonWebTokenError) {
             return res.status(401).json({
-                message: 'Token inválido' 
+                message: 'Token inválido'
             })
         }
 
-        return res.status(500).json({ 
+        return res.status(500).json({
             message: 'Erro interno de autenticação',
             error: error instanceof Error ? error.message : 'Erro desconhecido'
         })
     }
-
 }
 
-export const adminMiddleware = async(
+export const adminMiddleware = async (
     req: Request,
     res: Response,
     next: NextFunction
-) => {
+): Promise<any> => {
     try {
         const user = await prisma.user.findUnique({
             where: {
@@ -112,14 +111,14 @@ export const adminMiddleware = async(
         })
 
         if (!user) {
-            return res.status(403).json({ 
-                message: 'Acesso negado. Requer permissão de administrador.' 
+            return res.status(403).json({
+                message: 'Acesso negado. Requer permissão de administrador.'
             })
         }
 
         next()
     } catch (error) {
-        return res.status(500).json({ 
+        return res.status(500).json({
             message: 'Erro na verificação de permissões',
             error: error instanceof Error ? error.message : 'Erro desconhecido'
         })
