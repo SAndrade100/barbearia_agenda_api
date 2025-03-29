@@ -32,8 +32,8 @@ const options = {
         }
     },
     apis: [
-        path.join(__dirname, 'routes', '*.ts'),
-        path.join(__dirname, 'controllers', '*.ts')
+        path.join(__dirname, 'routes', '*.ts'), 
+        path.join(__dirname, 'controllers', '*.ts') 
     ]
 }
 
